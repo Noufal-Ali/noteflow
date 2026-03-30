@@ -128,6 +128,51 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,  # Keep default Django loggers
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name}: {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {  # Prints logs to terminal
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "file": {  # Save logs to file
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(os.getenv('LOG'), "noteflow.log"),
+            "formatter": "verbose",
+        },
+    },
+    "root": {  # Default logger for all apps
+        "handlers": ["console", "file"],
+        "level": "DEBUG",  # Change to INFO in production
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "Noteflow": {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+}
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/

@@ -1,25 +1,23 @@
+import logging
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
 from core.error_codes import ERROR_CODES
 from django.conf import settings
 
+logger = logging.getLogger(__name__)
+
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     if response is None:
-        if settings.DEBUG:
-            return Response({
-                "error":{
-                    "error_code": 9999,
-                    "message": str(exc),
-            }}, status=500)
+        logger.error(f"Unhandled exception: {exc}")
+
         return Response({
             "error":{
                 "error_code": 9999,
                 "message": "Internal server error",
         }}, status=500)
     
-    #Handle validation errors
     if isinstance(response.data, dict):
         field_errors = {}
 
@@ -37,7 +35,8 @@ def custom_exception_handler(exc, context):
                 "error_code": code,
                 "message": message
             }
-        
+
+        logger.error(f"Validation error: {field_errors}")
         return Response ({
             "error":{
                 "error_code": ERROR_CODES["VALIDATION_ERROR"],
@@ -46,6 +45,7 @@ def custom_exception_handler(exc, context):
             }
         }, status=response.status_code)
     
+    logger.error(f"Validation error: {field_errors}")
     return Response ({
         "error":{
             "error_code": ERROR_CODES["VALIDATION_ERROR"],
