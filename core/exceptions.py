@@ -1,11 +1,18 @@
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
 from core.error_codes import ERROR_CODES
+from django.conf import settings
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     if response is None:
+        if settings.DEBUG:
+            return Response({
+                "error":{
+                    "error_code": 9999,
+                    "message": str(exc),
+            }}, status=500)
         return Response({
             "error":{
                 "error_code": 9999,
@@ -42,6 +49,6 @@ def custom_exception_handler(exc, context):
     return Response ({
         "error":{
             "error_code": ERROR_CODES["VALIDATION_ERROR"],
-            "message": str(response.data),
+            "message": response.data.get("detail", "An error occurred")
         }
     }, status=response.status_code)

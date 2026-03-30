@@ -31,4 +31,5 @@ urlpatterns = [
     #App Routes
     path('accounts/', include('accounts.urls')),
     path('notes/', include('notes.urls')),
+    path('ai/', include('ai.urls')),
 ]

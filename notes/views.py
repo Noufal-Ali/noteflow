@@ -1,6 +1,6 @@
 from rest_framework import viewsets, filters
 from .models import Note, Task
-from .serializers import NoteSerializer, TaskSerializer
+from .serializers import NoteSerializer, TaskSerializer, TagSerializer
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
